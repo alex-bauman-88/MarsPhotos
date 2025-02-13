@@ -19,10 +19,61 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.marsphotos.network.MarsApi
+import kotlinx.coroutines.launch
+import java.io.IOException
+
+/*
+A sealed interface makes it easy to manage state by limiting the possible values.
+
+A sealed interface (or sealed class, which is very similar) restricts the possible subtypes
+(classes or objects that implement the interface) to only those defined within the same file.
+It's like an enum on steroids, but with much more flexibility.
+
+Main Function:  The primary purpose of a sealed interface is to represent a limited set of states
+in a type-safe way. Because you know all possible subtypes at compile time, you can use when
+expressions to handle each state exhaustively.
+
+The compiler will even warn you if you forget to handle one of the states in your when expression,
+ensuring you've considered all possibilities.
+
+Here, MarsUiState can only be one of three things: Success, Error, or Loading.
+No other types can implement MarsUiState from outside this file.
+*/
+
+/* Data Class, Object, and Data Object
+
+Data Class:
+
+A data class is designed to hold data.  The compiler automatically generates useful methods
+like equals(), hashCode(), and toString(), making them convenient for representing data structures.
+They are ideal when you primarily care about the data itself.
+
+Object:
+
+An object declaration defines a singleton.  There is only one instance of that object ever created.
+Objects are useful for things like utility classes, managers, or representing states where you
+don't need to hold specific data.
+
+Data Object:
+
+A data object is a combination of a data class and an object.
+It's a singleton (like an object) but also has the compiler-generated methods of a data class
+(equals, hashCode, toString etc.). They are useful when you need a single instance of a class
+and also need the data class functionality.
+
+*/
+
+sealed interface MarsUiState {
+    data class Success(val photos: String) : MarsUiState
+    data object Error : MarsUiState
+    data object Loading : MarsUiState
+}
 
 class MarsViewModel : ViewModel() {
     /** The mutable State that stores the status of the most recent request */
-    var marsUiState: String by mutableStateOf("")
+    var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading) // Loading is default value
         private set
 
     /**
@@ -34,9 +85,16 @@ class MarsViewModel : ViewModel() {
 
     /**
      * Gets Mars photos information from the Mars API Retrofit service and updates the
-     * [MarsPhoto] [List] [MutableList].
-     */
+     * [MarsPhoto] [List] [MutableList].      */
     fun getMarsPhotos() {
-        marsUiState = "Set the Mars API status response here!"
+        viewModelScope.launch {
+            try {
+                val listResult = MarsApi.retrofitService.getPhotos()
+                marsUiState = MarsUiState.Success("Success: ${listResult.size} Mars photos retrieved")
+            } catch (e: IOException) {
+                 marsUiState = MarsUiState.Error
+//                MarsUiState.Error // You can lift the 'marsUiState =' assignment
+            }
+        }
     }
 }
