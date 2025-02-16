@@ -39,6 +39,8 @@ Use the Coil library to load and display photos from the internet in your Androi
 
 ---------------
 [The lab at developer.android.com, steps 1-6](https://developer.android.com/codelabs/basic-android-kotlin-compose-getting-data-internet?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-5-pathway-1%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-getting-data-internet#5)
+
+
 [Steps 7-.. lab: ](https://developer.android.com/codelabs/basic-android-kotlin-compose-add-repository?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-5-pathway-2%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-add-repository#0)
 
 Steps:
@@ -51,4 +53,5 @@ Steps:
 6. Parse the JSON response with kotlinx.serialization:
 6.1. Add kotlinx.serialization library dependencies.
 6.2. Implement the Mars Photo data class `app/src/main/java/com/example/marsphotos/network/MarsPhoto.kt`
-7. 
+7. Attach application container to the app
+8. Add repository and Factory to ViewModel
