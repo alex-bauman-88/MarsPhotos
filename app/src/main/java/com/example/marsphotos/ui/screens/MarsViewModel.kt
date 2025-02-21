@@ -105,14 +105,45 @@ class MarsViewModel(
             }
         }
     }
+
     companion object {
+        // 1. Declaring a property named Factory that implements ViewModelProvider.Factory interface
         val Factory: ViewModelProvider.Factory = viewModelFactory {
+            // 2. Using the viewModelFactory DSL to create a factory
             initializer {
+                // 3. Getting the Application instance using a special key.
+                // `this` refers to the current context
+                // `APPLICATION_KEY` is a special key provided by Android to access the Application instance
+                // `as MarsPhotosApplication` casts the Application instance to a MarsPhotosApplication instance
                 val application = (this[APPLICATION_KEY] as MarsPhotosApplication)
+
+                // 4. Getting the repository from the container (the container was created when the app started)
+                // The repository is created lazily (only when first accessed)
                 val marsPhotosRepository = application.container.marsPhotosRepository
+
+                // 5. Creating and returning a new ViewModel instance
+                // Passes the repository it needs as a dependency
                 MarsViewModel(marsPhotosRepository = marsPhotosRepository)
+
+                // When used in the UI:
+                // val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
             }
         }
     }
-
 }
+
+/* This factory pattern is crucial because:
+- ViewModels can't have constructor parameters without a factory
+- It provides a clean way to inject dependencies
+- It integrates with Android's ViewModel lifecycle management
+*/
+
+/*Following dependency injection's best practices, ViewModels can take dependencies as parameters
+in their constructor. These are mostly of types from the domain or data layers. Because the framework 
+provides the ViewModels, a special mechanism is required to create instances of them. 
+
+That mechanism is the ViewModelProvider.Factory interface. Only implementations of this interface 
+can instantiate ViewModels in the right scope.
+
+Source: https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-factories
+ */

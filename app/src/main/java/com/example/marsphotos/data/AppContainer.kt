@@ -6,6 +6,14 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
+/**
+* A container is an object that contains the dependencies that the app requires.
+ * These dependencies are used across the whole application, so they need to be
+ * in a common place that all activities can use.
+ *
+ * You can create a subclass of the Application class and store a reference to the container.
+*/
+
 interface AppContainer {
     val marsPhotosRepository: MarsPhotosRepository
 }
