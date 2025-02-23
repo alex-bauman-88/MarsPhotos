@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.marsphotos.MarsPhotosApplication
 import com.example.marsphotos.data.MarsPhotosRepository
+import com.example.marsphotos.model.MarsPhoto
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -71,7 +72,7 @@ and also need the data class functionality.
 */
 
 sealed interface MarsUiState {
-    data class Success(val photos: String) : MarsUiState
+    data class Success(val photos: List<MarsPhoto>) : MarsUiState
     data object Error : MarsUiState
     data object Loading : MarsUiState
 }
@@ -95,13 +96,12 @@ class MarsViewModel(
      * [MarsPhoto] [List] [MutableList].      */
     fun getMarsPhotos() {
         viewModelScope.launch {
-            try {
-                val listResult = marsPhotosRepository.getMarsPhotos()
-                marsUiState =
-                    MarsUiState.Success("Success: ${listResult.size} Mars photos retrieved")
-            } catch (e: IOException) {
-                marsUiState = MarsUiState.Error
-//                MarsUiState.Error // You can lift the 'marsUiState =' assignment
+            marsUiState = try {
+                MarsUiState.Success(marsPhotosRepository.getMarsPhotos())
+            }
+            catch (e: IOException) {
+                MarsUiState.Error
+        //                MarsUiState.Error // You can lift the 'marsUiState =' assignment
             }
         }
     }
@@ -147,3 +147,9 @@ can instantiate ViewModels in the right scope.
 
 Source: https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-factories
  */
+
+
+
+
+
+

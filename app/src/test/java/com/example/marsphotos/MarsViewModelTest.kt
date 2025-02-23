@@ -16,7 +16,7 @@ class MarsViewModelTest {
     @get:Rule
     val testDispatcher = TestDispatcherRule()
 
-    /** You do not need to directly call MarsViewlModel.getMarsPhotos() to
+    /** You do not need to directly call MarsViewModel.getMarsPhotos() to
      * trigger a call to MarsPhotosRepository.getMarsPhotos().
      * MarsViewModel.getMarsPhotos() is called when the ViewModel is initialized.*/
     @Test
@@ -26,10 +26,7 @@ class MarsViewModelTest {
                 marsPhotosRepository = FakeNetworkMarsPhotosRepository()
             )
             assertEquals(
-                MarsUiState.Success(
-                    "Success: ${FakeDataSource.photosList.size} Mars " +
-                            "photos retrieved"
-                ),
+                MarsUiState.Success(FakeDataSource.photosList),
                 marsViewModel.marsUiState
             )
 
