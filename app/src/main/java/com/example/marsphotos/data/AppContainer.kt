@@ -31,7 +31,8 @@ class DefaultAppContainer: AppContainer {
         .build()  // Call build() to create the Retrofit object.
 
     private val retrofitService: MarsApiService by lazy {
-        retrofit.create(MarsApiService::class.java)
+        // ↓ dynamically creates an implementation of the MarsApiService interface at runtime
+        retrofit.create(MarsApiService::class.java) 
     }
 
     override val marsPhotosRepository: MarsPhotosRepository by lazy {

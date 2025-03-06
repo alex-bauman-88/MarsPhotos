@@ -35,7 +35,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -55,35 +54,31 @@ fun HomeScreen(
     marsUiState: MarsUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    contentPadding: PaddingValues,
 ) {
     when (marsUiState) {
-        is MarsUiState.Success -> PhotosGridScreen(photos = marsUiState.photos, modifier)
-        is MarsUiState.Error -> ErrorScreen(retryAction = retryAction,modifier = modifier.fillMaxSize())
-        is MarsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
+        is MarsUiState.Success -> PhotosGridScreen(
+            photos = marsUiState.photos,
+            contentPadding = contentPadding,
+            modifier = modifier
+        )
+        is MarsUiState.Error -> ErrorScreen(
+            retryAction = retryAction,
+            modifier = modifier.fillMaxSize()
+        )
+        is MarsUiState.Loading -> LoadingScreen(
+            modifier = modifier.fillMaxSize()
+        )
 
-    }
-}
-
-/**
- * ResultScreen displaying number of photos retrieved.
- */
-@Composable
-fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-    ) {
-        Text(text = photos)
     }
 }
 
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Image(
-        modifier = modifier.size(200.dp),
         painter = painterResource(R.drawable.loading_img),
-        contentDescription = stringResource(R.string.loading)
+        contentDescription = stringResource(R.string.loading),
+        modifier = modifier.size(200.dp)
     )
 }
 
@@ -105,7 +100,7 @@ fun ErrorScreen(
             text = stringResource(R.string.loading_failed),
             modifier = Modifier.padding(16.dp)
         )
-        Button(onClick = retryAction){
+        Button(onClick = retryAction) {
             Text(stringResource(R.string.retry))
         }
     }
@@ -115,7 +110,7 @@ fun ErrorScreen(
 fun PhotosGridScreen(
     photos: List<MarsPhoto>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
@@ -128,7 +123,7 @@ fun PhotosGridScreen(
         ) { photo ->
             MarsPhotoCard(
                 photo,
-                modifier = modifier
+                modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
                     .aspectRatio(1.5f)
@@ -159,19 +154,19 @@ fun MarsPhotoCard(photo: MarsPhoto, modifier: Modifier = Modifier) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun PhotosGridScreenPreview() {
-    MarsPhotosTheme {
-        val mockData = List(10) { MarsPhoto("$it", "") }
-        PhotosGridScreen(mockData)
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PhotosGridScreenPreview() {
+//    MarsPhotosTheme {
+//        val mockData = List(10) { MarsPhoto("$it", "") }
+//        PhotosGridScreen(mockData)
+//    }
+//}
 
 @Preview
 @Composable
 private fun ErrorScreenPreview() {
-    MarsPhotosTheme{
+    MarsPhotosTheme {
         ErrorScreen({})
     }
 }
